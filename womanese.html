@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>womanese · translate the unspoken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #0a0f1e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+      color: #eef2ff;
+    }
+
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0b1424, #1a1f3a, #2a1e3c, #0f172a);
+      background-size: 400% 400%;
+      animation: gradientShift 20s ease infinite;
+      z-index: -2;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 0%; }
+      25% { background-position: 100% 0%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    .radial-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 40%, rgba(255, 179, 71, 0.08) 0%, rgba(10, 15, 30, 0.85) 80%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .glass-card {
+      background: rgba(18, 28, 48, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 1.5rem;
+      box-shadow: 0 15px 25px -12px rgba(0,0,0,0.6);
+      transition: all 0.25s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(255, 179, 71, 0.5);
+      box-shadow: 0 20px 30px -10px rgba(255, 140, 66, 0.25);
+      transform: translateY(-4px);
+    }
+
+    .navbar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 1300px;
+      background: rgba(10, 15, 30, 0.65);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 2rem;
+      padding: 0.8rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.7);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Caveat', cursive;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f5f5f5;
+      letter-spacing: 1px;
+      background: transparent;
+      -webkit-text-fill-color: #f5f5f5;
+    }
+
+    .logo i {
+      color: #f5f5f5;
+      font-size: 2rem;
+      background: none;
+      -webkit-text-fill-color: #f5f5f5;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #eef2ff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 179, 71, 0.15);
+      color: #FFD166;
+    }
+
+    .hamburger {
+      display: none;
+      background: transparent;
+      border: none;
+      color: #FFB347;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    .mobile-panel {
+      position: fixed;
+      top: 0;
+      right: -280px;
+      width: 280px;
+      height: 100vh;
+      background: rgba(8, 12, 26, 0.9);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-left: 1px solid rgba(255,255,255,0.2);
+      z-index: 200;
+      transition: right 0.35s ease;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+    }
+
+    .mobile-panel.open { right: 0; }
+
+    .close-panel {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      color: #FFB347;
+      font-size: 2rem;
+      cursor: pointer;
+      margin-bottom: 2rem;
+    }
+
+    .mobile-panel a {
+      color: #eef2ff;
+      text-decoration: none;
+      padding: 1rem 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      font-weight: 500;
+      display: block;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(3px);
+      z-index: 150;
+      display: none;
+    }
+
+    .overlay.show { display: block; }
+
+    .container {
+      width: 100%;
+      max-width: 1300px;
+      margin-top: 120px;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .tab-content { display: none; }
+    .active-tab-content { display: block; }
+
+    .hero {
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-card {
+      padding: 2.5rem 2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 4rem;
+      font-weight: 700;
+      color: #f5f5f5;
+      background: transparent;
+      -webkit-text-fill-color: #f5f5f5;
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      margin-bottom: 2rem;
+    }
+
+    .cta-btn {
+      background: linear-gradient(135deg, #FF8C42, #FFB347);
+      border: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 3rem;
+      font-weight: 600;
+      color: #0a0f1e;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(255, 140, 66, 0.4);
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px rgba(255, 179, 71, 0.55);
+    }
+
+    .section-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      padding: 0.6rem 1.8rem;
+      border-radius: 3rem;
+      margin: 0 auto 2rem;
+      width: fit-content;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-bottom: 2.2rem;
+    }
+
+    .chip {
+      background: rgba(20, 30, 50, 0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.5rem 1.3rem;
+      border-radius: 2rem;
+      color: #eef2ff;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+
+    .chip.active {
+      background: linear-gradient(135deg, #FF8C42, #FFB347);
+      border-color: #FFD166;
+      box-shadow: 0 0 18px rgba(255, 179, 71, 0.7);
+      color: #0a0f1e;
+      font-weight: 600;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.8rem;
+      margin-top: 1rem;
+    }
+
+    .decode-card {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage-badge {
+      background: rgba(255, 179, 71, 0.18);
+      color: #FFD166;
+      padding: 0.2rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      width: fit-content;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255,179,71,0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .advanced-badge {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #0a0f1e;
+      padding: 0.15rem 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+
+    .quote {
+      font-style: italic;
+      border-left: 4px solid #FFB347;
+      padding-left: 1rem;
+      margin: 0.8rem 0 0.5rem;
+      font-size: 1.05rem;
+      color: #f0f4ff;
+    }
+
+    .translation-text {
+      font-size: 0.9rem;
+      color: #FFB347;
+      margin: 0.2rem 0 1rem 1.2rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0.9;
+    }
+
+    .translation-text i {
+      font-size: 0.8rem;
+      color: #FF8C42;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 0.5rem 0 0.8rem;
+    }
+
+    .action-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #eef2ff;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 179, 71, 0.25);
+      border-color: #FFB347;
+    }
+
+    .action-btn.frame-btn {
+      border-color: rgba(255, 215, 0, 0.5);
+      background: rgba(255, 215, 0, 0.1);
+    }
+
+    .action-btn.frame-btn:hover {
+      background: rgba(255, 215, 0, 0.25);
+      border-color: #FFD700;
+    }
+
+    .response-box {
+      margin-top: 0.8rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 1rem;
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      border-left: 3px solid #FF8C42;
+      display: none;
+      color: #ddd;
+    }
+
+    .response-box.frame-response {
+      border-left-color: #FFD700;
+    }
+
+    .reset-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.7rem 2rem;
+      border-radius: 2rem;
+      color: #FFB347;
+      margin: 2rem auto 0;
+      display: block;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .reset-btn:hover { background: rgba(255,140,66,0.2); }
+
+    .mastery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin-top: 2rem;
+    }
+
+    .counter-badge {
+      background: rgba(255, 179, 71, 0.2);
+      color: #FFD166;
+      padding: 0.3rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      margin-left: 0.5rem;
+      border: 1px solid rgba(255,179,71,0.4);
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .hero h1 { font-size: 2.8rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .navbar { padding: 0.7rem 1.5rem; }
+      .hero h1 { font-size: 2.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+  <div class="radial-overlay"></div>
+
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-dragon"></i> womanese
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a data-tab="home" class="nav-item active-tab"><i class="fas fa-home"></i> Home</a>
+      <a data-tab="decoder" class="nav-item"><i class="fas fa-comment"></i> Decoder</a>
+      <a data-tab="mastery" class="nav-item"><i class="fas fa-chess"></i> Mastery</a>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+      <i class="fas fa-bars"></i>
+    </button>
+  </nav>
+
+  <div class="mobile-panel" id="mobilePanel">
+    <button class="close-panel" id="closePanelBtn"><i class="fas fa-times"></i></button>
+    <a data-tab="home" class="mobile-nav-item"><i class="fas fa-home"></i> Home</a>
+    <a data-tab="decoder" class="mobile-nav-item"><i class="fas fa-comment"></i> Decoder</a>
+    <a data-tab="mastery" class="mobile-nav-item"><i class="fas fa-chess"></i> Mastery</a>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="container">
+    <section id="tab-home" class="tab-content active-tab-content">
+      <div class="hero">
+        <div class="glass-card hero-card">
+          <h1>what she says<br>vs what she means</h1>
+          <p class="subtitle">Decode subtext, keep frame, stay amused. All content unlocked.</p>
+          <button class="cta-btn" id="goToDecoderBtn"><i class="fas fa-book-open"></i> translate now</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-decoder" class="tab-content">
+      <div class="section-pill">
+        <i class="fas fa-unlock-alt"></i> <span>all content unlocked</span>
+        <span class="counter-badge" id="phraseCounter">68 phrases</span>
+      </div>
+      <div class="filter-chips" id="filterChips">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="First Contact">First Contact</button>
+        <button class="chip" data-filter="Dating Stage">Dating Stage</button>
+        <button class="chip" data-filter="Relationship">Relationship</button>
+        <button class="chip" data-filter="Married Life">Married Life</button>
+        <button class="chip" data-filter="Living Together">Living Together</button>
+        <button class="chip" data-filter="Texting">Texting</button>
+        <button class="chip" data-filter="Advanced"><i class="fas fa-crown"></i> Advanced</button>
+      </div>
+      <div class="cards-grid" id="cardsContainer"></div>
+      <button class="reset-btn" id="resetAllBtn"><i class="fas fa-undo-alt"></i> Reset all answers</button>
+    </section>
+
+    <section id="tab-mastery" class="tab-content">
+      <div class="section-pill">
+        <i class="fas fa-chess-queen"></i> <span>master the frame</span>
+      </div>
+      <div class="mastery-grid">
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-laugh"></i> Amused Mastery</h3>
+          <p style="margin-top:0.5rem">Respond with playful confidence. Never reactive. She tests, you smile.</p>
+        </div>
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-shield-alt"></i> Frame Control</h3>
+          <p>Own your reality. She enters your world, not vice versa. The frame is yours.</p>
+        </div>
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-skull"></i> Bad Reply Fails</h3>
+          <p>Neediness, butthurt, logical explanations kill attraction. Never defend, never beg.</p>
+        </div>
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-heart-broken"></i> Why Bad Replies Fail</h3>
+          <p>They demonstrate low value, insecurity, and lack of emotional intelligence.</p>
+        </div>
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-brain"></i> The Psychology</h3>
+          <p>Women communicate covertly to gauge social intelligence. Directness can be social suicide.</p>
+        </div>
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-bullseye"></i> The Goal</h3>
+          <p>Not manipulation. Understanding. Speak her language while maintaining your masculine core.</p>
+        </div>
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-crown"></i> Advanced Dark Triad Tactics</h3>
+          <p>Psychological patterns for high-stakes situations. Now fully unlocked for all users.</p>
+        </div>
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="color:#FFB347"><i class="fas fa-star"></i> Response Archetypes</h3>
+          <p>Good: Maintains value. Bad: Seeks validation. Frame: Redefines the conversation on your terms.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function() {
+      // ==================== ALL PHRASES UNLOCKED ====================
+      const phrases = [
+        // ===== FIRST CONTACT (12 phrases) =====
+        { stage: "First Contact", text: "I have a boyfriend.", translation: "I'm not interested in you specifically, but I'll let you down gently.", good: "\"Cool, I have a goldfish. We should still grab coffee.\"", bad: "\"Oh sorry, I didn't know.\" (retreat)", frame: "\"And I have a math test. Neither of those stops us from talking.\"" },
+        { stage: "First Contact", text: "Maybe some other time.", translation: "I'm not interested, but I don't want to reject you directly.", good: "\"Definitely. I'll check my calendar.\"", bad: "\"Please, just one chance.\"", frame: "\"No worries. I'm busy building an empire anyway.\"" },
+        { stage: "First Contact", text: "How did you get my number?", translation: "I'm testing your confidence and social proof.", good: "\"The universe provided it. Coffee Thursday?\"", bad: "\"Oh, um, I asked your friend... is that okay?\"", frame: "\"I have my ways. Question is, are you free this week?\"" },
+        { stage: "First Contact", text: "I'm not looking for anything right now.", translation: "I'm not attracted to you enough to consider options.", good: "\"Me neither. Just enjoying good conversation.\"", bad: "\"But we could be so good together!\"", frame: "\"Perfect. Neither am I. Let's just have fun.\"" },
+        { stage: "First Contact", text: "You're too young/old for me.", translation: "I noticed you but I'm putting up a barrier to see how you handle it.", good: "\"Age is just a number. Chemistry is chemistry.\"", bad: "\"But age doesn't matter! I'm very mature for my age!\"", frame: "\"You're right. I'm basically a toddler with a credit card.\"" },
+        { stage: "First Contact", text: "I don't give my number to strangers.", translation: "Show me you're not a creep and maybe I'll reconsider.", good: "\"Smart policy. Let's talk here for 5 minutes then decide.\"", bad: "\"Oh come on, I'm a nice guy!\"", frame: "\"Respect. I don't give mine to strangers either. Let's change that.\"" },
+        { stage: "First Contact", text: "Are you hitting on me?", translation: "I know you are, but I want to see if you own it confidently.", good: "\"Absolutely. Is it working?\"", bad: "\"What? No! I was just being friendly...\"", frame: "\"Trying to. You're making it difficult in the best way.\"" },
+        { stage: "First Contact", text: "I just got out of something serious.", translation: "I'm emotionally unavailable but might make an exception for the right person.", good: "\"Sounds like you need a fun distraction. I'm excellent at those.\"", bad: "\"Oh no, what happened? Tell me everything.\"", frame: "\"Then let's keep it light. No baggage check-in required.\"" },
+        { stage: "First Contact", text: "Do you use this line on all the girls?", translation: "I'm interested but I want to feel special, not like a number.", good: "\"Only the ones who catch my eye. Today that's you.\"", bad: "\"No! I swear you're different!\" (defensive)", frame: "\"Nope. I retired my best material. You're getting the raw, unfiltered version.\"" },
+        { stage: "First Contact", text: "I bet you say that to everyone.", translation: "I like the compliment but I'm testing your sincerity.", good: "\"Only when it's true. And right now, it is.\"", bad: "\"No I don't! Why don't you believe me?\"", frame: "\"Everyone? No. Just the ones who make me forget my own name.\"" },
+        { stage: "First Contact", text: "You're not my type.", translation: "I'm attracted but I want to see if you'll chase or get butthurt.", good: "\"Good. Types are boring. Chemistry is unexpected.\"", bad: "\"What's your type? I can change!\"", frame: "\"I know. I'm everyone's exception.\"" },
+        { stage: "First Contact", text: "I don't drink.", translation: "I have boundaries and I'm watching how you respect them.", good: "\"Cool. Coffee, tea, or an aggressive smoothie?\"", bad: "\"Not even one drink? Come on, live a little!\"", frame: "\"Neither do I on Tuesdays. Wait, what day is it?\"" },
+
+        // ===== DATING STAGE (12 phrases) =====
+        { stage: "Dating Stage", text: "I'm not ready for a relationship right now.", translation: "I'm not ready for a relationship... with you.", good: "\"No problem, we're just getting to know each other.\"", bad: "\"But I thought we had something special!\"", frame: "\"I wasn't proposing. Let's enjoy tonight.\"" },
+        { stage: "Dating Stage", text: "I'm really busy this week.", translation: "I'm not prioritizing you right now.", good: "\"Totally get it. Let me know when you're free.\"", bad: "\"You're always busy. Do you even like me?\"", frame: "\"Busy people make the world spin. Ping me when you surface.\"" },
+        { stage: "Dating Stage", text: "Let's just see where things go.", translation: "I'm keeping my options open and you're not my only priority.", good: "\"I like that. No pressure, just good vibes.\"", bad: "\"So you're seeing other people?\"", frame: "\"Exactly. I'm enjoying the journey, not rushing the destination.\"" },
+        { stage: "Dating Stage", text: "My ex and I still talk sometimes.", translation: "I'm testing if you're the jealous type.", good: "\"Cool. Healthy boundaries are important.\"", bad: "\"Why? Are you still in love with him?\"", frame: "\"Nice. I talk to my ex's cat sometimes. We're cool.\"" },
+        { stage: "Dating Stage", text: "I don't usually do this on a first date.", translation: "I'm attracted to you but want you to know I'm not 'easy'.", good: "\"Neither do I. You must be special.\"", bad: "\"Oh, so you're one of those girls with rules?\"", frame: "\"Neither do I. We're breaking all the rules tonight.\"" },
+        { stage: "Dating Stage", text: "Can we take things slow?", translation: "I'm interested but need to build more trust and comfort.", good: "\"Absolutely. Best things in life aren't rushed.\"", bad: "\"How slow? Give me a timeline.\"", frame: "\"Agreed. I'm enjoying every step, no need to sprint.\"" },
+        { stage: "Dating Stage", text: "What are we?", translation: "I want to define the relationship and need to know where I stand.", good: "\"Two people who clearly enjoy each other's company. Let's keep that going.\"", bad: "\"Uh, I don't know. What do you want us to be?\"", frame: "\"We're whatever makes you smile like that. Let's not overthink it.\"" },
+        { stage: "Dating Stage", text: "I hope you're not like other guys.", translation: "I've been hurt before and I'm cautiously optimistic about you.", good: "\"I'm worse. I actually listen and remember things.\"", bad: "\"I'm different! I swear! Let me prove it!\"", frame: "\"I'm exactly like other guys. Except for the part where I'm awesome.\"" },
+        { stage: "Dating Stage", text: "Why haven't you texted me?", translation: "I was waiting for you and started overthinking.", good: "\"Was giving you space to miss me. Did it work?\"", bad: "\"I've been busy! Why didn't you text me?\"", frame: "\"I was building suspense. You're welcome.\"" },
+        { stage: "Dating Stage", text: "Do you remember what today is?", translation: "It's an important date and I'm testing if you care.", good: "\"Of course. The day my life got significantly better.\"", bad: "\"Tuesday? Is it your birthday?\" (panic)", frame: "\"It's the anniversary of you asking me trick questions. Happy anniversary.\"" },
+        { stage: "Dating Stage", text: "My friends want to meet you.", translation: "I'm serious about you and want social validation from my circle.", good: "\"I'd love to meet them. When's the interrogation?\"", bad: "\"Already? Isn't it a bit soon?\"", frame: "\"Great. I'll bring my charm and let them see why you've been smiling more.\"" },
+        { stage: "Dating Stage", text: "I think we should see other people.", translation: "I'm losing interest and testing if you'll fight for me.", good: "\"If that's what you want. I don't do half-measures though.\"", bad: "\"No! Please don't leave! I'll do anything!\"", frame: "\"I agree. You should see other people. Then you'll realize what you have.\"" },
+
+        // ===== RELATIONSHIP (12 phrases) =====
+        { stage: "Relationship", text: "We need to talk.", translation: "I have something important to discuss and I need your full attention.", good: "\"Sure, let's grab a drink and chat.\"", bad: "\"What did I do now?\" (defensive)", frame: "\"I love talks. You bring the topic, I'll bring calm.\"" },
+        { stage: "Relationship", text: "Nothing's wrong.", translation: "Everything is wrong and you should already know why.", good: "\"Okay. When you're ready to share, I'm here.\"", bad: "\"Good, because you seemed upset for no reason.\"", frame: "\"I know that 'nothing'. Take your time. I'm not going anywhere.\"" },
+        { stage: "Relationship", text: "Do you still find me attractive?", translation: "I need reassurance and validation right now.", good: "\"More every day. Come here.\"", bad: "\"Why would you even ask that? Of course I do.\"", frame: "\"I was just thinking how lucky I am. You read my mind.\"" },
+        { stage: "Relationship", text: "My friend's boyfriend just proposed to her.", translation: "I'm hinting about our future and want to know where you stand.", good: "\"That's wonderful. What kind of ring did she get?\"", bad: "\"That's nice. Anyway, what's for dinner?\"", frame: "\"Nice. Everyone has their own timeline. Ours will be epic.\"" },
+        { stage: "Relationship", text: "I need some space.", translation: "I feel overwhelmed or smothered and need to breathe.", good: "\"Take all the space you need. I'll be here.\"", bad: "\"Space? Are you breaking up with me?\"", frame: "\"Understood. I'll be over here being awesome until you miss me.\"" },
+        { stage: "Relationship", text: "Do you think she's pretty?", translation: "I'm feeling insecure and testing your loyalty.", good: "\"She's alright. But she's not you.\"", bad: "\"Who? Her? Yeah, she's gorgeous!\"", frame: "\"Pretty is a spectrum. You're off the chart.\"" },
+        { stage: "Relationship", text: "I'm sorry.", translation: "I want to move past this but I need to know you forgive me completely.", good: "\"I appreciate that. We're good.\"", bad: "\"Sorry for what exactly?\" (interrogation)", frame: "\"Accepted. Now let's make up properly.\"" },
+        { stage: "Relationship", text: "Where do you see us in 5 years?", translation: "I'm evaluating long-term compatibility and need serious answers.", good: "\"Happy, healthy, and probably arguing about what to watch on Netflix.\"", bad: "\"I don't know. 5 years is a long time.\"", frame: "\"In a house we love, still making each other laugh. You?\"" },
+        { stage: "Relationship", text: "You never listen to me.", translation: "I feel unheard and emotionally neglected.", good: "\"You're right. I'm listening now. Tell me everything.\"", bad: "\"I listen all the time! Name one time I didn't!\"", frame: "\"Then I've been missing out. Talk to me. I'm all ears.\"" },
+        { stage: "Relationship", text: "I don't want to talk about it.", translation: "I absolutely want to talk about it but I need you to create a safe space first.", good: "\"Okay. But I'm here when you do. No judgment.\"", bad: "\"Fine. Let's just ignore it then.\"", frame: "\"Then we won't. Let's just sit here. I'll be your safe harbor.\"" },
+        { stage: "Relationship", text: "I saw you liked her photo.", translation: "I'm monitoring your social media activity and feeling jealous/insecure.", good: "\"I like lots of photos. I love only one person.\"", bad: "\"Are you seriously stalking my likes?\"", frame: "\"Guilty. I also liked a picture of a dog today. The dog was cuter.\"" },
+        { stage: "Relationship", text: "Are you happy with me?", translation: "I'm sensing distance and need you to reaffirm your commitment.", good: "\"Happier than I've ever been. What's on your mind?\"", bad: "\"Of course! Why would you ask that?\"", frame: "\"I'm happy. But I'd be happier if you told me what's really bothering you.\"" },
+
+        // ===== MARRIED LIFE (12 phrases) =====
+        { stage: "Married Life", text: "Do whatever you want.", translation: "You should know exactly what I want without me having to say it.", good: "\"Thanks. I'll pick the movie and you'll still love it.\"", bad: "\"Fine, I won't go then.\"", frame: "\"I always do. And you still adore me.\"" },
+        { stage: "Married Life", text: "The trash is full.", translation: "Take out the trash right now without me having to ask.", good: "\"On it. Anything else while I'm up?\"", bad: "\"Okay... and?\"", frame: "\"Noticed. Already halfway to the bin.\"" },
+        { stage: "Married Life", text: "Are you listening to me?", translation: "You haven't made eye contact or acknowledged my story.", good: "\"Yes. You said the Karen from accounting wore white after Labor Day.\"", bad: "\"What? Yeah, something about work...\"", frame: "\"Every word. Karen should be arrested for that fashion crime.\"" },
+        { stage: "Married Life", text: "My mother is coming to visit.", translation: "Prepare yourself mentally and hide anything she might judge.", good: "\"Great! I'll stock up on her favorite wine.\"", bad: "\"Again? She was just here!\"", frame: "\"Perfect. I need someone to critique my cooking anyway.\"" },
+        { stage: "Married Life", text: "I don't want anything for my birthday.", translation: "You better get me something thoughtful or there will be consequences.", good: "\"Noted. I'll plan nothing spectacular at all.\"", bad: "\"Okay, if you say so.\" (gets nothing)", frame: "\"Got it. Zero effort birthday incoming. Be very surprised.\"" },
+        { stage: "Married Life", text: "Did you even notice?", translation: "I got my hair done/changed something and you completely missed it.", good: "\"Of course! It looks amazing. I was waiting for the right moment to say so.\"", bad: "\"Notice what? Everything looks normal.\"", frame: "\"I noticed the moment you walked in. I was just enjoying the view.\"" },
+        { stage: "Married Life", text: "We need to talk about finances.", translation: "I'm stressed about money and need you to be serious for once.", good: "\"Let's sit down Sunday morning with coffee and go through everything.\"", bad: "\"Ugh, do we have to? Everything's fine.\"", frame: "\"Absolutely. I'll bring spreadsheets. You bring your brilliant brain.\"" },
+        { stage: "Married Life", text: "You're working late again.", translation: "I miss you and feel like I'm not a priority anymore.", good: "\"I know. I'll make it up to you this weekend. Just us.\"", bad: "\"I have to work! Someone has to pay the bills!\"", frame: "\"I am. But I'm leaving early tomorrow. Date night. Clear your schedule.\"" },
+        { stage: "Married Life", text: "The kids are driving me crazy.", translation: "I need a break and I need you to step up right now.", good: "\"Go take a bath. I've got them for the next two hours.\"", bad: "\"They're just being kids. Relax.\"", frame: "\"Tag, you're out. I'm in. Go recharge, superhero.\"" },
+        { stage: "Married Life", text: "Remember when we used to...", translation: "I miss the romance and excitement of our early days together.", good: "\"Let's do that again. This weekend. I'll plan it.\"", bad: "\"Yeah, that was before kids and responsibilities.\"", frame: "\"We still do. We just have more audience members now. Let's recreate it.\"" },
+        { stage: "Married Life", text: "I'm too tired tonight.", translation: "I'm genuinely exhausted but also feeling disconnected from you.", good: "\"Then let's just cuddle. No expectations.\"", bad: "\"You're always tired. What about my needs?\"", frame: "\"Sleep then. I'll be here tomorrow with coffee and renewed enthusiasm.\"" },
+        { stage: "Married Life", text: "You don't appreciate me.", translation: "I feel taken for granted and need visible acknowledgment.", good: "\"You're right. Let me list everything I appreciate about you starting now.\"", bad: "\"Of course I do! What more do you want?\"", frame: "\"I do. I just suck at showing it sometimes. Let me fix that immediately.\"" },
+
+        // ===== LIVING TOGETHER (10 phrases) =====
+        { stage: "Living Together", text: "It's fine.", translation: "It is absolutely not fine, and you should know why.", good: "\"I can see it's not. Let's fix it after dinner.\"", bad: "\"Okay great.\" (ignores)", frame: "\"'Fine' is womanese for 'try again'. I'm here.\"" },
+        { stage: "Living Together", text: "I'm not mad.", translation: "I am furious but I want you to figure out why on your own.", good: "\"I appreciate that. I'd still like to make it right.\"", bad: "\"Good, because you have no reason to be mad.\"", frame: "\"Not mad. Got it. I'll just be extra charming until you're not not-mad.\"" },
+        { stage: "Living Together", text: "I'll do the dishes later.", translation: "I'm hoping you'll just do them for me.", good: "\"I got them. You cooked, I clean.\"", bad: "\"No you won't. They'll sit there for three days.\"", frame: "\"Or... plot twist: I do them now and become the hero.\"" },
+        { stage: "Living Together", text: "Are those new jeans?", translation: "I notice you spent money and didn't tell me.", good: "\"Yes! Got them on sale. Do they make me look handsome?\"", bad: "\"Maybe. Why do you care?\"", frame: "\"New-ish. They were hiding in the closet. Miracle find.\"" },
+        { stage: "Living Together", text: "We never go out anymore.", translation: "I want romance and effort, not just Netflix on the couch.", good: "\"You're right. Date night this Friday. Dress fancy.\"", bad: "\"We went out last month!\"", frame: "\"Then it's time. I'm planning something. No phones allowed.\"" },
+        { stage: "Living Together", text: "You're home late.", translation: "I was worried and also wondering if you're prioritizing work over us.", good: "\"I know, rough day. I missed you though. How was yours?\"", bad: "\"Yeah, work was crazy. What's for dinner?\"", frame: "\"Guilty. But I rushed home because you're better than any meeting.\"" },
+        { stage: "Living Together", text: "Do you even care?", translation: "I feel neglected and need you to show me you're still invested.", good: "\"More than anything. Tell me what you need right now.\"", bad: "\"Of course I care! Why would you say that?\"", frame: "\"I care so much it's ridiculous. Let me prove it starting now.\"" },
+        { stage: "Living Together", text: "Whose turn is it to clean the bathroom?", translation: "It's your turn and I'm annoyed you haven't done it yet.", good: "\"Mine. I'll tackle it first thing tomorrow.\"", bad: "\"I don't know. Does it really matter?\"", frame: "\"Mine. I was just waiting for the perfect moment. Tomorrow at 9am.\"" },
+        { stage: "Living Together", text: "You left the toilet seat up again.", translation: "This is the hundredth time and I'm questioning if you respect me.", good: "\"My bad. Habit. I'll do better, promise.\"", bad: "\"It's not a big deal! Just put it down!\"", frame: "\"I did. The cat must have done it. But I'll take the blame.\"" },
+        { stage: "Living Together", text: "I need more help around here.", translation: "I'm drowning in household responsibilities and feeling unappreciated.", good: "\"You're right. Let's make a new chore chart. I'll take three more.\"", bad: "\"I help! What are you talking about?\"", frame: "\"Then you shall have it. Delegate. I'm your willing servant today.\"" },
+
+        // ===== TEXTING (10 phrases) =====
+        { stage: "Texting", text: "k.", translation: "I'm annoyed but don't want to start a fight over text.", good: "\"That 'k' felt aggressive. I'll bring chocolate.\"", bad: "\"Why are you mad?\"", frame: "\"Received. Sending good vibes.\"" },
+        { stage: "Texting", text: "I'll let you know.", translation: "Probably not happening, but I don't want to say no directly.", good: "\"Sounds good. The offer stands if you're free.\"", bad: "\"When will you know? Can you give me a time?\"", frame: "\"No rush. I'll be doing something awesome either way.\"" },
+        { stage: "Texting", text: "Who's that girl in your profile picture?", translation: "I'm jealous and checking if you're seeing other people.", good: "\"That's my sister. Want to meet her?\"", bad: "\"Why are you stalking my pictures?\"", frame: "\"My favorite cousin. She'd probably like you more than me.\"" },
+        { stage: "Texting", text: "Sorry, just saw this.", translation: "I saw it hours ago but wasn't sure how to respond or wanted to seem busy.", good: "\"No worries. Life happens. How was your day?\"", bad: "\"It's been 6 hours. Where were you?\"", frame: "\"All good. I assumed you were off being fascinating.\"" },
+        { stage: "Texting", text: "Goodnight.", translation: "The conversation is over. Don't keep texting.", good: "\"Sleep well. Dream of something fun.\"", bad: "\"Wait, I wanted to ask you something else!\"", frame: "\"Sweet dreams. I'll be here being awesome tomorrow.\"" },
+        { stage: "Texting", text: "Can I ask you something?", translation: "I'm about to ask something serious or potentially awkward.", good: "\"Always. What's on your mind?\"", bad: "\"Uh oh. What did I do?\"", frame: "\"You just did. But yes, go ahead.\"" },
+        { stage: "Texting", text: "I had a weird dream about you.", translation: "I was thinking about you before bed and want to share something intimate.", good: "\"Now I'm curious. Was I a superhero or a villain?\"", bad: "\"Weird how? Should I be worried?\"", frame: "\"Let me guess... I was incredibly charming and you woke up smiling.\"" },
+        { stage: "Texting", text: "...", translation: "I'm waiting for you to say something better or I'm speechless.", good: "\"Those are three very meaningful dots. Let me upgrade my response.\"", bad: "\"What does that mean?\"", frame: "\"Ellipsis received. I'll take that as 'impressed and thinking'.\"" },
+        { stage: "Texting", text: "Are you ignoring me?", translation: "You didn't respond fast enough and my anxiety is spiking.", good: "\"Never. Just got caught up. What's up?\"", bad: "\"No! Why would you think that? It's only been 20 minutes!\"", frame: "\"Ignoring you? Impossible. I was just building anticipation for my reply.\"" },
+        { stage: "Texting", text: "Send me a picture.", translation: "I want to see you right now and feel connected.", good: "\"*Sends a genuine selfie with a smile*\"", bad: "\"Why? Don't you trust me?\"", frame: "\"Only if you send one back. Fair trade.\"" },
+
+        // ===== ADVANCED TACTICS (10 phrases) - FULLY UNLOCKED =====
+        { stage: "Advanced", text: "I'm not like other girls.", translation: "I'm seeking validation that I'm special and unique.", good: "\"I can tell. You're in a league of your own.\"", bad: "\"That's exactly what all girls say.\"", frame: "\"Good. I don't date 'other girls'. I date exceptional ones.\"" },
+        { stage: "Advanced", text: "All men are the same.", translation: "I've been hurt and I'm testing if you'll prove me wrong.", good: "\"Then I'll be the exception that proves the rule.\"", bad: "\"That's not fair! I'm different!\"", frame: "\"You're right. We're all terrible. I'm just the best of the worst.\"" },
+        { stage: "Advanced", text: "I don't need a man.", translation: "I'm fiercely independent but open to the right partner.", good: "\"You don't. But want and need are different things.\"", bad: "\"Everyone needs someone!\"", frame: "\"Neither do I. But wanting one is more fun anyway.\"" },
+        { stage: "Advanced", text: "You're too nice.", translation: "You lack edge and I'm losing attraction.", good: "\"Nice is my default. Wait till you see the other settings.\"", bad: "\"What's wrong with being nice?\"", frame: "\"I'm nice to people I respect. Don't confuse it with weakness.\"" },
+        { stage: "Advanced", text: "I'm testing you.", translation: "I'm openly admitting I'm testing your frame.", good: "\"How am I doing so far?\"", bad: "\"That's not fair! Why would you test me?\"", frame: "\"I know. And I'm passing with flying colors.\"" },
+        { stage: "Advanced", text: "You're different from other guys.", translation: "I'm starting to develop feelings and it scares me.", good: "\"Different good or different 'I need to run'?\"", bad: "\"I know! I'm special! Please give me a chance!\"", frame: "\"I know. It's a burden being this awesome.\"" },
+        { stage: "Advanced", text: "I can't figure you out.", translation: "You're not being predictable and it's increasing my attraction.", good: "\"Good. Mystery keeps things interesting.\"", bad: "\"What's to figure out? I'm an open book!\"", frame: "\"That's the point. I'm not a puzzle, I'm an experience.\"" },
+        { stage: "Advanced", text: "Why do you like me?", translation: "I'm seeking specific validation about what makes me special to you.", good: "\"You make me laugh. That's rare and valuable.\"", bad: "\"I don't know, I just do. You're nice.\"", frame: "\"I'll tell you on our 10th date. Gotta keep some mystery.\"" },
+        { stage: "Advanced", text: "I'm scared of getting hurt again.", translation: "I have trust issues but I'm considering letting you in.", good: "\"I understand. No promises except that I'm real with you.\"", bad: "\"I would never hurt you! I swear on my life!\"", frame: "\"Fear means you care. I'm patient. Walls come down brick by brick.\"" },
+        { stage: "Advanced", text: "Make me.", translation: "I'm challenging your dominance. This is a high-attraction test.", good: "\"Don't tempt me. You might like the result.\"", bad: "\"Make you what? I don't understand.\"", frame: "\"Careful what you wish for. You just might get it.\"" }
+      ];
+
+      let currentFilter = 'all';
+      const cardsContainer = document.getElementById('cardsContainer');
+      const phraseCounter = document.getElementById('phraseCounter');
+      
+      function updateCounter(filter) {
+        if (filter === 'all') {
+          phraseCounter.textContent = `${phrases.length} phrases`;
+        } else {
+          const count = phrases.filter(p => p.stage === filter).length;
+          phraseCounter.textContent = `${count} phrases`;
+        }
+      }
+      
+      function renderCards(filter = 'all') {
+        if (!cardsContainer) return;
+        const filtered = filter === 'all' ? phrases : phrases.filter(p => p.stage === filter);
+        updateCounter(filter);
+        
+        cardsContainer.innerHTML = filtered.map((item, index) => {
+          const isAdvanced = item.stage === 'Advanced';
+          return `
+            <div class="glass-card decode-card" data-stage="${item.stage}">
+              <span class="stage-badge">
+                <i class="fas fa-tag"></i> ${item.stage}
+                ${isAdvanced ? '<span class="advanced-badge"><i class="fas fa-crown"></i> PREMIUM</span>' : ''}
+              </span>
+              <div class="quote">"${item.text}"</div>
+              <div class="translation-text">
+                <i class="fas fa-arrow-right"></i> <span>${item.translation}</span>
+              </div>
+              <div class="action-btns">
+                <button class="action-btn good-btn" data-idx="${index}" data-type="good">
+                  <i class="fas fa-check-circle"></i> Good
+                </button>
+                <button class="action-btn bad-btn" data-idx="${index}" data-type="bad">
+                  <i class="fas fa-times-circle"></i> Bad
+                </button>
+                <button class="action-btn frame-btn" data-idx="${index}" data-type="frame">
+                  <i class="fas fa-crown"></i> Frame Control
+                </button>
+              </div>
+              <div class="response-box good-response" id="good-${index}">
+                <strong style="color:#4CAF50;">Good Response:</strong> ${item.good}
+              </div>
+              <div class="response-box bad-response" id="bad-${index}">
+                <strong style="color:#f44336;">Bad Response:</strong> ${item.bad}
+              </div>
+              <div class="response-box frame-response" id="frame-${index}">
+                <strong style="color:#FFD700;">Frame Control:</strong> ${item.frame}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function toggleResponse(card, type, index) {
+        const responseDiv = card.querySelector(`#${type}-${index}`);
+        if (responseDiv) {
+          const isCurrentlyShown = responseDiv.style.display === 'block';
+          // Hide all responses in this card first
+          card.querySelectorAll('.response-box').forEach(box => box.style.display = 'none');
+          // Toggle clicked response
+          responseDiv.style.display = isCurrentlyShown ? 'none' : 'block';
+        }
+      }
+
+      function setupCardEvents() {
+        if (!cardsContainer) return;
+        cardsContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          if (btn.classList.contains('good-btn') || btn.classList.contains('bad-btn') || btn.classList.contains('frame-btn')) {
+            const card = btn.closest('.decode-card');
+            const type = btn.dataset.type;
+            const idx = btn.dataset.idx;
+            if (card && type && idx !== undefined) {
+              toggleResponse(card, type, idx);
+            }
+          }
+        });
+      }
+
+      function resetAllResponses() {
+        document.querySelectorAll('.response-box').forEach(box => {
+          box.style.display = 'none';
+        });
+      }
+
+      function setActiveChip(filterValue) {
+        document.querySelectorAll('#filterChips .chip').forEach(chip => {
+          if (chip.dataset.filter === filterValue) {
+            chip.classList.add('active');
+          } else {
+            chip.classList.remove('active');
+          }
+        });
+      }
+
+      function applyFilter(filterValue) {
+        currentFilter = filterValue;
+        renderCards(filterValue);
+        setActiveChip(filterValue);
+      }
+
+      // ==================== TAB SWITCHING ====================
+      const tabs = {
+        home: document.getElementById('tab-home'),
+        decoder: document.getElementById('tab-decoder'),
+        mastery: document.getElementById('tab-mastery')
+      };
+
+      function switchTab(tabId) {
+        Object.keys(tabs).forEach(key => {
+          if (tabs[key]) tabs[key].classList.remove('active-tab-content');
+        });
+        if (tabs[tabId]) tabs[tabId].classList.add('active-tab-content');
+        
+        document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(link => {
+          link.classList.remove('active-tab');
+        });
+        document.querySelectorAll(`.nav-item[data-tab="${tabId}"], .mobile-nav-item[data-tab="${tabId}"]`).forEach(el => el.classList.add('active-tab'));
+        
+        closeMobileMenu();
+      }
+
+      // ==================== MOBILE MENU ====================
+      const mobilePanel = document.getElementById('mobilePanel');
+      const overlay = document.getElementById('overlay');
+      const hamburger = document.getElementById('hamburgerBtn');
+      const closePanel = document.getElementById('closePanelBtn');
+
+      function openMobileMenu() {
+        mobilePanel.classList.add('open');
+        overlay.classList.add('show');
+      }
+
+      function closeMobileMenu() {
+        mobilePanel.classList.remove('open');
+        overlay.classList.remove('show');
+      }
+
+      // ==================== EVENT LISTENERS ====================
+      document.querySelectorAll('.nav-item').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = link.dataset.tab;
+          if (tab) switchTab(tab);
+        });
+      });
+
+      document.querySelectorAll('.mobile-nav-item').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = link.dataset.tab;
+          if (tab) switchTab(tab);
+        });
+      });
+
+      hamburger.addEventListener('click', openMobileMenu);
+      closePanel.addEventListener('click', closeMobileMenu);
+      overlay.addEventListener('click', closeMobileMenu);
+
+      document.getElementById('filterChips').addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        const filter = chip.dataset.filter;
+        if (filter) applyFilter(filter);
+      });
+
+      document.getElementById('resetAllBtn').addEventListener('click', resetAllResponses);
+      document.getElementById('goToDecoderBtn').addEventListener('click', () => switchTab('decoder'));
+
+      // ==================== INITIALIZATION ====================
+      renderCards('all');
+      setupCardEvents();
+      switchTab('home');
+    })();
+  </script>
+</body>
+</html>
